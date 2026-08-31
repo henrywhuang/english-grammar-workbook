@@ -1,7 +1,8 @@
 .DS_Store
 .venv/
+node_modules/
+test-results/
 __pycache__/
 *.py[cod]
 tmp/
 English_Grammar_Knowledge_Outline_CN (1).pdf
-
