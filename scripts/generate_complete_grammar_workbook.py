@@ -329,7 +329,12 @@ def extract_topics():
             lines += (page.extract_text() or "").splitlines()
     for raw in lines:
         line = raw.strip()
-        if not line or line in skip or line.isdigit():
+        if (
+            not line
+            or line in skip
+            or line.isdigit()
+            or line.startswith(("英语语法知识体系", "STRUCTURED OUTLINE", "说明：", "Grammar Outline Index"))
+        ):
             continue
         if line.startswith(("一、", "二、", "三、")):
             part = line
@@ -340,11 +345,13 @@ def extract_topics():
             topic = re.sub(r"^\d{3}\s+", "", line[1:].strip())
             topics.append({"cn": topic, "part": part, "section": section, "sub": sub})
             continue
-        if re.match(r"^\d+(\.\d+)?\s+", line):
+        if re.match(r"^\d+\.\d+\s+", line):
+            sub = line
+            continue
+        if re.match(r"^\d+\s+", line):
             section = line
             sub = ""
             continue
-        sub = line
     return topics
 
 

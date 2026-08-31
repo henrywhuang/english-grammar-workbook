@@ -38,20 +38,49 @@
       return !query || haystack.includes(query);
     });
     topicCount.textContent = `${topics.length} / ${data.topicCount} 个知识点`;
-    topicList.innerHTML = topics.length ? topics.map(topic => `
-      <button class="topic-item ${topic.number === state.topic + 1 ? "active" : ""}" data-topic="${topic.number - 1}">
-        <span class="number">${topicNumber(topic.number)}</span>
-        <span class="label">${escapeHTML(topic.title)}</span>
-      </button>`).join("") : `<div class="empty">没有找到匹配的知识点</div>`;
+    let previousPart = "";
+    let previousSection = "";
+    let previousSubsection = "";
+    topicList.innerHTML = topics.length ? topics.map(topic => {
+      let headings = "";
+      if (topic.part !== previousPart) {
+        headings += `<div class="sidebar-part">${escapeHTML(topic.part)}</div>`;
+        previousPart = topic.part;
+        previousSection = "";
+        previousSubsection = "";
+      }
+      if (topic.section !== previousSection) {
+        headings += `<div class="sidebar-section">${escapeHTML(topic.section)}</div>`;
+        previousSection = topic.section;
+        previousSubsection = "";
+      }
+      if (topic.subsection && topic.subsection !== previousSubsection) {
+        headings += `<div class="sidebar-subsection">${escapeHTML(topic.subsection)}</div>`;
+        previousSubsection = topic.subsection;
+      }
+      return `${headings}<button class="topic-item ${topic.number === state.topic + 1 ? "active" : ""}" data-topic="${topic.number - 1}">
+          <span class="number">${topicNumber(topic.number)}</span>
+          <span class="label">${escapeHTML(topic.title)}</span>
+        </button>`;
+    }).join("") : `<div class="empty">没有找到匹配的知识点</div>`;
+  }
+
+  function buildHierarchy(topics) {
+    const parts = new Map();
+    topics.forEach(topic => {
+      if (!parts.has(topic.part)) parts.set(topic.part, new Map());
+      const sections = parts.get(topic.part);
+      if (!sections.has(topic.section)) sections.set(topic.section, new Map());
+      const subsections = sections.get(topic.section);
+      const key = topic.subsection || "";
+      if (!subsections.has(key)) subsections.set(key, []);
+      subsections.get(key).push(topic);
+    });
+    return parts;
   }
 
   function renderOutline() {
-    const groups = new Map();
-    data.topics.forEach(topic => {
-      const key = topic.part || "英语语法知识体系";
-      if (!groups.has(key)) groups.set(key, []);
-      groups.get(key).push(topic);
-    });
+    const hierarchy = buildHierarchy(data.topics);
     $("#outlineView").innerHTML = `
       <div class="hero">
         <div class="eyebrow">Structured learning · 随时练习</div>
@@ -68,14 +97,24 @@
         <a class="resource-card" href="assets/worksheet.pdf" target="_blank"><span class="file-type">PDF · WORKSHEET</span><strong>完整题目册</strong><small>适合打印与线下练习</small></a>
         <a class="resource-card" href="assets/answers.pdf" target="_blank"><span class="file-type">PDF · ANSWERS</span><strong>完整答案册</strong><small>按知识点快速核对答案</small></a>
       </div>
-      ${[...groups.entries()].map(([part, topics]) => `
+      ${[...hierarchy.entries()].map(([part, sections]) => `
         <div class="outline-group">
-          <div class="eyebrow">Knowledge map</div>
-          <h2>${escapeHTML(part)}</h2>
-          <div class="outline-grid">${topics.map(topic => `
-            <button class="outline-link" data-open-topic="${topic.number - 1}">
-              <b>${topicNumber(topic.number)}</b><span>${escapeHTML(topic.title)}</span>
-            </button>`).join("")}</div>
+          <div class="level-label">LEVEL 1 · 部分</div>
+          <h2 class="part-heading">${escapeHTML(part)}</h2>
+          ${[...sections.entries()].map(([section, subsections]) => `
+            <section class="chapter-group">
+              <div class="level-label">LEVEL 2 · 章节</div>
+              <h3>${escapeHTML(section)}</h3>
+              ${[...subsections.entries()].map(([subsection, topics]) => `
+                <div class="subsection-group">
+                  ${subsection ? `<div class="level-label">LEVEL 3 · 小节</div><h4>${escapeHTML(subsection)}</h4>` : ""}
+                  <div class="level-label topic-level">LEVEL ${subsection ? "4" : "3"} · 知识点</div>
+                  <div class="outline-grid">${topics.map(topic => `
+                    <button class="outline-link" data-open-topic="${topic.number - 1}">
+                      <b>${topicNumber(topic.number)}</b><span>${escapeHTML(topic.title)}</span>
+                    </button>`).join("")}</div>
+                </div>`).join("")}
+            </section>`).join("")}
         </div>`).join("")}`;
   }
 
@@ -231,4 +270,3 @@
   readHash();
   render();
 })();
-

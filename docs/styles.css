@@ -57,6 +57,9 @@ button { color: inherit; }
 .search-wrap input:focus { border-color: var(--green); box-shadow: 0 0 0 3px var(--green-soft); }
 .topic-count { padding: 0 20px 10px; color: var(--muted); font-size: 12px; }
 .topic-list { overflow-y: auto; padding: 0 10px 14px; scrollbar-width: thin; }
+.sidebar-part { margin: 12px 8px 5px; color: var(--accent); font-size: 11px; font-weight: 850; letter-spacing: .09em; }
+.sidebar-section { margin: 9px 8px 3px; padding-top: 7px; border-top: 1px solid #eceae3; font: 700 13px Georgia, "Songti SC", serif; }
+.sidebar-subsection { margin: 7px 8px 3px 18px; color: var(--green); font-size: 12px; font-weight: 750; }
 .topic-item { display: grid; grid-template-columns: 42px 1fr; gap: 8px; width: 100%; padding: 10px; border: 0; border-radius: 12px; text-align: left; background: transparent; cursor: pointer; }
 .topic-item:hover { background: #f3f1ea; }
 .topic-item.active { background: var(--green-soft); }
@@ -84,8 +87,14 @@ h1 { margin: 10px 0 14px; font-size: clamp(36px, 6vw, 66px); font-weight: 600; l
 .resource-card .file-type { color: var(--accent); font: 800 11px ui-monospace, monospace; letter-spacing: .1em; }
 .resource-card strong { margin: auto 0 3px; font-family: Georgia, "Songti SC", serif; font-size: 18px; }
 .resource-card small { color: var(--muted); }
-.outline-group { margin: 28px 0; }
-.outline-group h2 { padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.outline-group { margin: 42px 0 58px; }
+.level-label { color: var(--accent); font-size: 9px; font-weight: 850; letter-spacing: .13em; }
+.part-heading { margin: 5px 0 22px; padding: 18px 22px; border-radius: 16px; color: white; background: var(--ink); font-size: 28px; }
+.chapter-group { margin: 24px 0; padding-left: 20px; border-left: 3px solid var(--green); }
+.chapter-group h3 { margin: 4px 0 20px; font-size: 23px; }
+.subsection-group { margin: 0 0 25px; padding: 17px 18px 18px; border: 1px solid var(--line); border-radius: 16px; background: rgba(255, 254, 250, .68); }
+.subsection-group h4 { margin: 4px 0 14px; color: var(--green); font: 700 17px Georgia, "Songti SC", serif; }
+.topic-level { margin: 3px 0 9px; color: var(--muted); }
 .outline-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
 .outline-link { display: flex; gap: 12px; padding: 13px; border: 1px solid transparent; border-radius: 12px; background: rgba(255,255,255,.45); cursor: pointer; text-align: left; }
 .outline-link:hover { border-color: var(--line); background: white; }
@@ -145,4 +154,3 @@ h1 { margin: 10px 0 14px; font-size: clamp(36px, 6vw, 66px); font-weight: 600; l
   .app-shell { display: block; padding: 0; }
   .question-card { box-shadow: none; break-inside: avoid; }
 }
-
