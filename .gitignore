@@ -1,0 +1,7 @@
+.DS_Store
+.venv/
+__pycache__/
+*.py[cod]
+tmp/
+English_Grammar_Knowledge_Outline_CN (1).pdf
+
